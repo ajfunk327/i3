@@ -717,8 +717,66 @@ void x_draw_decoration(Con *con) {
     }
 
     /* 4: paint the bar */
-    draw_util_rectangle(&(parent->frame_buffer), p->color->background,
-                        con->deco_rect.x, con->deco_rect.y, con->deco_rect.width, con->deco_rect.height);
+    {
+        surface_t *surface = &(parent->frame_buffer);
+        color_t color = draw_util_hex_to_color("#FF7D86");
+        
+        //RETURN_UNLESS_SURFACE_INITIALIZED(surface);
+        cairo_save(surface->cr);
+
+        cairo_set_operator(surface->cr, CAIRO_OPERATOR_SOURCE);
+        cairo_set_source_rgba(surface->cr, color.red, color.green, color.blue, color.alpha);
+
+        cairo_set_line_width(surface->cr, 0);
+        cairo_arc(
+            surface->cr,
+            con->deco_rect.x + con->border_radius,
+            con->deco_rect.y + con->border_radius,
+            con->border_radius,
+            -1.0 * M_PI,
+            -0.5 * M_PI
+        );
+        cairo_arc(
+            surface->cr,
+            con->deco_rect.x + con->deco_rect.width - con->border_radius,
+            con->deco_rect.y + con->border_radius,
+            con->border_radius,
+            -0.5 * M_PI,
+             0.0 * M_PI
+        );
+        cairo_arc(
+            surface->cr,
+            con->deco_rect.x + con->deco_rect.width - con->border_radius,
+            con->deco_rect.y + con->border_radius + con->deco_rect.height,
+            con->border_radius,
+             0.0 * M_PI,
+             0.5 * M_PI
+        );
+        cairo_arc(
+            surface->cr,
+            con->deco_rect.x + con->border_radius,
+            con->deco_rect.y + con->border_radius + con->deco_rect.height,
+            con->border_radius,
+             0.5 * M_PI,
+            -1.0 * M_PI
+        );
+
+        cairo_stroke_preserve(surface->cr);
+        cairo_fill(surface->cr);
+
+        CAIRO_SURFACE_FLUSH(surface->surface);
+        cairo_restore(surface->cr);
+    }
+    /*******************************/
+    draw_util_rectangle(&(parent->frame_buffer), draw_util_hex_to_color("#FC9E8A"),
+                        con->deco_rect.x + 2*1*con->deco_rect.height, con->deco_rect.y, con->deco_rect.width - 2*2*con->deco_rect.height, con->deco_rect.height);
+    draw_util_rectangle(&(parent->frame_buffer), draw_util_hex_to_color("#FEBBA2"),
+                        con->deco_rect.x + 6*1*con->deco_rect.height, con->deco_rect.y, con->deco_rect.width - 6*2*con->deco_rect.height, con->deco_rect.height);
+    draw_util_rectangle(&(parent->frame_buffer), draw_util_hex_to_color("#FCCB96"),
+                        con->deco_rect.x + 9*1*con->deco_rect.height, con->deco_rect.y, con->deco_rect.width - 9*2*con->deco_rect.height, con->deco_rect.height);
+    draw_util_rectangle(&(parent->frame_buffer), draw_util_hex_to_color("#172126"),
+                        con->deco_rect.x + 10*1*con->deco_rect.height, con->deco_rect.y, con->deco_rect.width - 10*2*con->deco_rect.height, con->deco_rect.height);
+
 
     /* 5: draw title border */
     x_draw_title_border(con, p);
