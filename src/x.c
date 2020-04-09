@@ -369,15 +369,15 @@ static void x_draw_title_border(Con *con, struct deco_render_params *p) {
 
     /* Left */
     draw_util_rectangle(&(con->parent->frame_buffer), p->color->border,
-                        dr->x, dr->y, 1, dr->height);
+                        dr->x, dr->y + con->border_radius, 1, dr->height - con->border_radius);
 
     /* Right */
     draw_util_rectangle(&(con->parent->frame_buffer), p->color->border,
-                        dr->x + dr->width - 1, dr->y, 1, dr->height);
+                        dr->x + dr->width - 1, dr->y + con->border_radius, 1, dr->height - con->border_radius);
 
     /* Top */
     draw_util_rectangle(&(con->parent->frame_buffer), p->color->border,
-                        dr->x, dr->y, dr->width, 1);
+                        dr->x + con->border_radius, dr->y, dr->width - 2*con->border_radius, 1);
 
     /* Bottom */
     draw_util_rectangle(&(con->parent->frame_buffer), p->color->border,
